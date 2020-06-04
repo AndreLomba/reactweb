@@ -1,46 +1,99 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import api from './api';
-import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-
+import Header from './header';
+import { 
+    Container, 
+    Table, 
+    TableRow, 
+    TableCell, 
+    Dialog, 
+    Button, 
+    DialogTitle, 
+    DialogContent, 
+    DialogContentText, 
+    TextField, 
+    DialogActions} from '@material-ui/core';
+import './style.css';
 
 function App() {
 
-    const [lista, setLista] = useState([]); 
-    const [loading, setLoading] = useState(true);
-    
+    const [ lista, setLista ] = useState([]); // imutabilidade
+    const [ open, setOpen ] = useState(false);
+
+    const openModal = () => setOpen(true);
+
+    // function closeModal() { setOpen(false); }
+    const closeModal = () => setOpen(false);
+
     useEffect(() => {
         api.get('/agenda').then((response) => {
             const itens = response.data;
             setLista(itens);
-            setLoading(false);
         });
     }, []);
     
     return (
         <>
-            { loading ? <span>Carregando dados</span> : <div></div>}
-            <table border="1">
-                <tr>
-                    <th>id</th>
-                    <th>Nome</th>
-                    <th>Número</th>
-                    <th>Favorito</th>
-
-                </tr>
+         <Header />
+         <Container maxWidth="lg" className="container"> 
+            <Table>
                 {lista.map(itens => (
-                    <tr key={itens.id}>
-                        <td>{itens.id}</td>
-                        <td>{itens.nome}</td>
-                        <td>{itens.numero}</td>
-                        <td>{itens.favorito}</td>
-                    </tr>
+                    <TableRow key={itens.id}>
+                        <TableCell>{itens.id}</TableCell>
+                        <TableCell>{itens.nome}</TableCell>
+                        <TableCell>{itens.numero}</TableCell>
+
+                        <TableCell>
+                            <input type="checkbox" checked={itens.favorito == "S" ? true : false}/>
+                        </TableCell>
+                        <TableCell>
+                            <Button variant="outlined" size="small" color="secondary">Apagar</Button>
+                        </TableCell>
+                    </TableRow>
                 ))}
-                
-            </table>
-            <Button variant="contained" color="primary">
+            </Table>
+            <Button 
+                onClick={openModal}
+                variant="contained" 
+                color="primary" 
+                style={{marginTop: '20px'}}>
                 Adicionar
             </Button>
+         </Container>
+         <Dialog open={open} onClose={closeModal} fullWidth={true} maxWidth="sm">
+            <DialogTitle id="form-dialog-title">Nova Tarefa</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Digite os dados do contato.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Nome"
+                    type="email"
+                    fullWidth
+                    // value={tarefa}
+                />
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Número"
+                    type="email"
+                    fullWidth
+                    // value={tarefa}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={closeModal} color="primary">
+                    Cancelar
+                </Button>
+                <Button color="primary">
+                    Salvar
+                </Button>
+            </DialogActions>
+         </Dialog>
         </>
     )
 }
