@@ -12,6 +12,8 @@ import {
     DialogContent, 
     DialogContentText, 
     TextField, 
+    Checkbox ,
+    FormControlLabel ,
     DialogActions} from '@material-ui/core';
 import './style.css';
 
@@ -19,19 +21,65 @@ function App() {
 
     const [ lista, setLista ] = useState([]); // imutabilidade
     const [ open, setOpen ] = useState(false);
+    const [ nome, setNome ] = useState('');
+    const [ numero, setNumero ] = useState('');
+    const [ favorito, setFavorito ] = useState('S');
 
+    const [ checked, setChecked ] = useState(true);
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+        const check = checked ? "N" : "S";
+        setFavorito(check);
+    };
+    
     const openModal = () => setOpen(true);
 
-    // function closeModal() { setOpen(false); }
     const closeModal = () => setOpen(false);
 
-    useEffect(() => {
-        api.get('/agenda').then((response) => {
+    function listaNumeros(){
+         api.get('/agenda').then((response) => {
             const itens = response.data;
             setLista(itens);
         });
+    }
+
+    useEffect(() => {
+        listaNumeros();
     }, []);
     
+    function addContato(){
+        const name = nome;
+        const number = numero;
+        const favorite = favorito;
+
+        api.post('/agenda', {nome:name, numero:number, favorito:favorite}).then((response) => {
+            setNome('');
+            setNumero('');
+            setChecked(true);
+            setOpen(false);
+            listaNumeros();
+        });
+    }
+
+    function deleteContato(id){
+        api.delete(`/contato/${id}`).then((response) => {
+            listaNumeros();
+        });
+    }
+
+    function favoriteContato(id,favorito){
+        if(favorito == "S"){
+            api.patch(`/contato/${id}/desfavoritar`).then((response) => {
+                listaNumeros();
+            });
+        } else {
+            api.patch(`/contato/${id}/favoritar`).then((response) => {
+                listaNumeros();
+            });
+        }
+    }
+
     return (
         <>
          <Header />
@@ -44,10 +92,17 @@ function App() {
                         <TableCell>{itens.numero}</TableCell>
 
                         <TableCell>
-                            <input type="checkbox" checked={itens.favorito == "S" ? true : false}/>
+                            <input 
+                                type="checkbox" 
+                                onChange={() => favoriteContato(itens.id,itens.favorito)}
+                                checked={itens.favorito == "S" ? true : false}/>
                         </TableCell>
                         <TableCell>
-                            <Button variant="outlined" size="small" color="secondary">Apagar</Button>
+                            <Button 
+                                onClick={() => deleteContato(itens.id)}
+                                variant="outlined" 
+                                size="small" 
+                                color="secondary">Apagar</Button>
                         </TableCell>
                     </TableRow>
                 ))}
@@ -69,27 +124,42 @@ function App() {
                 <TextField
                     autoFocus
                     margin="dense"
-                    id="name"
+                    id="nome"
                     label="Nome"
-                    type="email"
+                    autoComplete="off"
+                    type="text"
                     fullWidth
-                    // value={tarefa}
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
                 />
                 <TextField
-                    autoFocus
                     margin="dense"
-                    id="name"
+                    id="numero"
                     label="Número"
-                    type="email"
+                    autoComplete="off"
+                    type="text"
                     fullWidth
-                    // value={tarefa}
+                    value={numero}
+                    onChange={e => setNumero(e.target.value)}
+
+                />
+                <FormControlLabel
+                    control={
+                    <Checkbox
+                        checked={checked}
+                        onChange={handleChange}
+                        color="primary"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                    }
+                    label="Favorito"
                 />
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeModal} color="primary">
                     Cancelar
                 </Button>
-                <Button color="primary">
+                <Button color="primary" onClick={addContato}>
                     Salvar
                 </Button>
             </DialogActions>
