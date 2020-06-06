@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Icon } from 'react';
 import api from './api';
 import Header from './header';
 import { 
@@ -6,6 +6,7 @@ import {
     Table, 
     TableRow, 
     TableCell, 
+    TableHead,
     Dialog, 
     Button, 
     DialogTitle, 
@@ -17,6 +18,7 @@ import {
     DialogActions} from '@material-ui/core';
 import './style.css';
 
+
 function App() {
 
     const [ lista, setLista ] = useState([]); // imutabilidade
@@ -24,7 +26,6 @@ function App() {
     const [ nome, setNome ] = useState('');
     const [ numero, setNumero ] = useState('');
     const [ favorito, setFavorito ] = useState('S');
-
     const [ checked, setChecked ] = useState(true);
 
     const handleChange = (event) => {
@@ -67,17 +68,16 @@ function App() {
             listaNumeros();
         });
     }
-
-    function favoriteContato(id,favorito){
-        if(favorito == "S"){
-            api.patch(`/contato/${id}/desfavoritar`).then((response) => {
-                listaNumeros();
-            });
+    function favoriteContato(id,fav){
+        if(fav == "S"){
+            fav = "N";
         } else {
-            api.patch(`/contato/${id}/favoritar`).then((response) => {
-                listaNumeros();
-            });
+            fav = "S";
         }
+        api.put(`/contato/favorito/${id}`,{favorito:fav}).then((response) => {
+            listaNumeros();
+        });
+       
     }
 
     return (
@@ -85,19 +85,33 @@ function App() {
          <Header />
          <Container maxWidth="lg" className="container"> 
             <Table>
+                
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Código</TableCell>
+                        <TableCell>Nome</TableCell>
+                        <TableCell>Número</TableCell>
+                        <TableCell>Favorito</TableCell>
+                        <TableCell>Ações</TableCell>
+                    </TableRow>
+                </TableHead>
                 {lista.map(itens => (
                     <TableRow key={itens.id}>
                         <TableCell>{itens.id}</TableCell>
                         <TableCell>{itens.nome}</TableCell>
                         <TableCell>{itens.numero}</TableCell>
+                        <TableCell>{itens.favorito}</TableCell>
 
                         <TableCell>
-                            <input 
-                                type="checkbox" 
-                                onChange={() => favoriteContato(itens.id,itens.favorito)}
-                                checked={itens.favorito == "S" ? true : false}/>
-                        </TableCell>
-                        <TableCell>
+                            <Button 
+                                color="primary"
+                                variant="outlined" 
+                                onClick={() => favoriteContato(itens.id,itens.favorito)}
+                                size="small"> 
+                                {itens.favorito == "S" ? "Desfavoritar" : "Favoritar"} 
+                            </Button>
+                            &nbsp;
+                            
                             <Button 
                                 onClick={() => deleteContato(itens.id)}
                                 variant="outlined" 
