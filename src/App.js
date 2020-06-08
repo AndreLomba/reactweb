@@ -18,7 +18,6 @@ import {
     DialogActions} from '@material-ui/core';
 import './style.css';
 
-
 function App() {
 
     const [ lista, setLista ] = useState([]); // imutabilidade
