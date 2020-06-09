@@ -97,13 +97,13 @@ function App() {
     }
 
     function editarContato(){
-        const f = 
         api.put(`/contato/${idContato}`,{nome:nome,numero:numero,favorito:favorito}).then((response) => {
             setOpen(false);
             setNome('');
             setNumero('');
-            setFavorito('');
+            setFavorito('S');
             setIdContato('');
+            setChecked(true);
             listaNumeros();
         });
     }
