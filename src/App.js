@@ -24,9 +24,12 @@ function App() {
     const [ open, setOpen ] = useState(false);
     const [ nome, setNome ] = useState('');
     const [ numero, setNumero ] = useState('');
+    const [ idContato, setIdContato ] = useState('');
     const [ favorito, setFavorito ] = useState('S');
     const [ checked, setChecked ] = useState(true);
-
+    const [ botaoEditar, setBotaoEditar ] = useState(false);
+    const [ botaoAdicionar, setBotaoAdicionar ] = useState(false);
+    
     const handleChange = (event) => {
         setChecked(event.target.checked);
         const check = checked ? "N" : "S";
@@ -49,6 +52,9 @@ function App() {
     }, []);
     
     function addContato(){
+        setBotaoAdicionar(true);
+        setBotaoEditar(false);
+
         const name = nome;
         const number = numero;
         const favorite = favorito;
@@ -79,6 +85,28 @@ function App() {
        
     }
 
+    function openEditar(id,nome,numero,favorito){
+        setBotaoAdicionar(false);
+        setBotaoEditar(true);
+        setOpen(true);
+        setNome(nome);
+        setNumero(numero);
+        setIdContato(id);
+        setChecked(favorito == "S" ? true : false);
+        setFavorito(favorito);
+    }
+
+    function editarContato(){
+        const f = 
+        api.put(`/contato/${idContato}`,{nome:nome,numero:numero,favorito:favorito}).then((response) => {
+            setOpen(false);
+            setNome('');
+            setNumero('');
+            setFavorito('');
+            setIdContato('');
+            listaNumeros();
+        });
+    }
     return (
         <>
          <Header />
@@ -110,7 +138,14 @@ function App() {
                                 {itens.favorito == "S" ? "Desfavoritar" : "Favoritar"} 
                             </Button>
                             &nbsp;
-                            
+                            <Button 
+                                color="primary"
+                                variant="outlined" 
+                                onClick={() => openEditar(itens.id,itens.nome,itens.numero,itens.favorito)}
+                                size="small"> 
+                                Editar 
+                            </Button>
+                            &nbsp;
                             <Button 
                                 onClick={() => deleteContato(itens.id)}
                                 variant="outlined" 
@@ -172,7 +207,7 @@ function App() {
                 <Button onClick={closeModal} color="primary">
                     Cancelar
                 </Button>
-                <Button color="primary" onClick={addContato}>
+                <Button color="primary" onClick={botaoEditar ? editarContato : addContato }>
                     Salvar
                 </Button>
             </DialogActions>
