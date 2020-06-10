@@ -19,7 +19,6 @@ import {
 import './style.css';
 
 function App() {
-
     const [ lista, setLista ] = useState([]); // imutabilidade
     const [ open, setOpen ] = useState(false);
     const [ nome, setNome ] = useState('');
