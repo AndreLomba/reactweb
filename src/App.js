@@ -36,10 +36,6 @@ function App() {
     };
     
     function openModal() {
-        setNome('');
-        setNumero('');
-        setFavorito('S');
-        setIdContato('');
         setOpen(true);
     };
 
@@ -51,6 +47,10 @@ function App() {
          api.get('/agenda').then((response) => {
             const itens = response.data;
             setLista(itens);
+              setNome('');
+                setNumero('');
+                setFavorito('S');
+                setIdContato('');
         });
     }
 
