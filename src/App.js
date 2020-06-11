@@ -171,7 +171,7 @@ function App() {
             </Button>
          </Container>
          <Dialog open={open} onClose={closeModal} fullWidth={true} maxWidth="sm">
-            <DialogTitle id="form-dialog-title">Nova Tarefa</DialogTitle>
+            <DialogTitle id="form-dialog-title">Contato</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Digite os dados do contato.
