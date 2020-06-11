@@ -36,6 +36,8 @@ function App() {
     };
     
     function openModal() {
+        setBotaoAdicionar(true);
+        setBotaoEditar(false);
         setOpen(true);
     };
 
@@ -59,9 +61,6 @@ function App() {
     }, []);
     
     function addContato(){
-        setBotaoAdicionar(true);
-        setBotaoEditar(false);
-
         const name = nome;
         const number = numero;
         const favorite = favorito;
