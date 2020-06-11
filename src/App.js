@@ -36,14 +36,14 @@ function App() {
     };
     
     function openModal() {
-        setOpen(true);
-    };
-
-    function closeModal() {
         setNome('');
         setNumero('');
         setFavorito('S');
         setIdContato('');
+        setOpen(true);
+    };
+
+    function closeModal() {
         setOpen(false);
     };
 
