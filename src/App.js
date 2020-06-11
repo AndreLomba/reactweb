@@ -35,9 +35,17 @@ function App() {
         setFavorito(check);
     };
     
-    const openModal = () => setOpen(true);
+    function openModal() {
+        setOpen(true);
+    };
 
-    const closeModal = () => setOpen(false);
+    function closeModal() {
+        setNome('');
+        setNumero('');
+        setFavorito('S');
+        setIdContato('');
+        setOpen(false);
+    };
 
     function listaNumeros(){
          api.get('/agenda').then((response) => {
