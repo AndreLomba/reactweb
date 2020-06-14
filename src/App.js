@@ -38,6 +38,10 @@ function App() {
     function openModal() {
         setBotaoAdicionar(true);
         setBotaoEditar(false);
+        setNome('');
+        setNumero('');
+        setFavorito('S');
+        setIdContato('');
         setOpen(true);
     };
 
